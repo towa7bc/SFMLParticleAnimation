@@ -52,7 +52,7 @@ class ParticleSystem : public sf::Drawable {
   [[nodiscard]] std::string getNumberOfParticlesString() const;
 
   void setCanvasSize(sf::Vector2u newSize) { canvasSize_ = newSize; }
-  void setDissolutionRate(sf::Uint8 rate) { dissolutionRate_ = rate; }
+  void setDissolutionRate(int rate) { dissolutionRate_ = rate; }
   void setDissolve() { dissolve_ = !dissolve_; }
   void setDistribution() { shape_ = (shape_ + 1) % 2; }
   void setGravity(float x, float y) {
@@ -66,7 +66,7 @@ class ParticleSystem : public sf::Drawable {
     startPos_.y = y;
   }
   void setPosition(sf::Vector2f position) { startPos_ = position; }
-  void setShape(sf::Uint8 shape) { shape_ = shape; }
+  void setShape(int shape) { shape_ = shape; }
 
   /* Member Functions */
 
@@ -83,8 +83,8 @@ class ParticleSystem : public sf::Drawable {
 
   sf::Color transparent_; /*< sf::Color(0, 0, 0, 0) */
 
-  sf::Uint8 dissolutionRate_; /*< Rate particles disolve */
-  sf::Uint8 shape_;           /*< Shape of distribution */
+  int dissolutionRate_; /*< Rate particles disolve */
+  int shape_;           /*< Shape of distribution */
 
   sf::Vector2f gravity_;    /*< Influences particle velocities */
   sf::Vector2f startPos_;   /*< Particle origin */

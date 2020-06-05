@@ -31,7 +31,7 @@ class Particle : public sf::Drawable {
     draw_vertex_.position = pos;
   }
 
-  void updateDrawVertexColorAlpha(const sf::Uint8 &alpha);
+  void updateDrawVertexColorAlpha(const int &alpha);
   void updateVelocity(const sf::Vector2f &vel);
 
  private:
