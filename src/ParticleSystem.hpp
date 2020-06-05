@@ -23,11 +23,9 @@ namespace sf {
 class RenderTarget;
 }
 
-namespace Shape {
-enum { CIRCLE, SQUARE };
-}
 namespace app {
 
+enum class Shape { CIRCLE = 0, SQUARE = 1 };
 using UniRealDist = std::uniform_real_distribution<>;
 using UniIntDist = std::uniform_int_distribution<>;
 
@@ -54,7 +52,9 @@ class ParticleSystem : public sf::Drawable {
   void setCanvasSize(sf::Vector2u newSize) { canvasSize_ = newSize; }
   void setDissolutionRate(sf::Uint8 rate) { dissolutionRate_ = rate; }
   void setDissolve() { dissolve_ = !dissolve_; }
-  void setDistribution() { shape_ = (shape_ + 1) % 2; }
+  void setDistribution() {
+    shape_ = static_cast<Shape>((static_cast<int>(shape_) + 1) % 2);
+  }
   void setGravity(float x, float y) {
     gravity_.x = x;
     gravity_.y = y;
@@ -66,7 +66,7 @@ class ParticleSystem : public sf::Drawable {
     startPos_.y = y;
   }
   void setPosition(sf::Vector2f position) { startPos_ = position; }
-  void setShape(int shape) { shape_ = shape; }
+  void setShape(Shape shape) { shape_ = shape; }
 
   /* Member Functions */
 
@@ -84,7 +84,7 @@ class ParticleSystem : public sf::Drawable {
   sf::Color transparent_; /*< sf::Color(0, 0, 0, 0) */
 
   sf::Uint8 dissolutionRate_; /*< Rate particles disolve */
-  int shape_;                 /*< Shape of distribution */
+  Shape shape_;               /*< Shape of distribution */
 
   sf::Vector2f gravity_;    /*< Influences particle velocities */
   sf::Vector2f startPos_;   /*< Particle origin */

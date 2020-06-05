@@ -78,9 +78,9 @@ void ParticleSystem::fuel(int numParticles) {
 
     /* Randomly change the colors of the particles */
     UniIntDist randomColor(0, 255);
-    sf::Color color{static_cast<unsigned char>(randomColor(gen)),
-                    static_cast<unsigned char>(randomColor(gen)),
-                    static_cast<unsigned char>(randomColor(gen)), 255};
+    sf::Color color{static_cast<sf::Uint8>(randomColor(gen)),
+                    static_cast<sf::Uint8>(randomColor(gen)),
+                    static_cast<sf::Uint8>(randomColor(gen)), 255};
     particle.setDrawVertexColor(color);
 
     particles_.push_back(std::move(particle));
