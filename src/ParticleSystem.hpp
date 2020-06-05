@@ -18,7 +18,6 @@ namespace app {
 
 using UniRealDist = std::uniform_real_distribution<>;
 using UniIntDist = std::uniform_int_distribution<>;
-using ParticlePtr = std::shared_ptr<Particle>;
 
 class ParticleSystem : public sf::Drawable {
  public:
@@ -61,7 +60,7 @@ class ParticleSystem : public sf::Drawable {
 
   void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
-  void fuel(int particles);     /*< Adds new particles */
+  void fuel(int numParticles);  /*< Adds new particles */
   void update(float deltaTime); /*< Updates particles */
 
  private:
@@ -80,7 +79,7 @@ class ParticleSystem : public sf::Drawable {
   sf::Vector2u canvasSize_; /*< Limits of particle travel */
 
   /* Container */
-  std::vector<ParticlePtr> particles_;
+  std::vector<Particle> particles_;
 };
 
 }  // namespace app

@@ -5,6 +5,7 @@
 #include "ParticleSystem.hpp"
 
 #include <sstream>
+#include <type_traits>
 
 namespace app {
 
@@ -29,17 +30,17 @@ ParticleSystem::~ParticleSystem() {
 void ParticleSystem::draw(sf::RenderTarget& target,
                           sf::RenderStates states) const {
   for (const auto& item : particles_) {
-    target.draw(&item->getDrawVertex(), 1, sf::Points, states);
+    target.draw(&item.getDrawVertex(), 1, sf::Points, states);
   }
 }
 
 /************************************************************/
-void ParticleSystem::fuel(int particles) {
-  for (int i = 0; i < particles; i++) {
+void ParticleSystem::fuel(int numParticles) {
+  for (int i = 0; i < numParticles; ++i) {
     /* Generate a new particle and put it at the generation point */
-    auto* particle = new Particle();
+    Particle particle;
     sf::Vector2f pos{startPos_.x, startPos_.y};
-    particle->setDrawVertexPosition(pos);
+    particle.setDrawVertexPosition(pos);
 
     /* Randomizer initialization */
     std::random_device rd;
@@ -56,7 +57,7 @@ void ParticleSystem::fuel(int particles) {
         UniRealDist randomAngleSin(0.0, sin(angle));
         sf::Vector2f vel{static_cast<float>(randomAngleCos(gen)),
                          static_cast<float>(randomAngleSin(gen))};
-        particle->setVelocity(vel);
+        particle.setVelocity(vel);
         break;
       }
       case Shape::SQUARE: {
@@ -64,17 +65,10 @@ void ParticleSystem::fuel(int particles) {
         UniRealDist randomSide(-1.0, 1.0);
         sf::Vector2f vel{static_cast<float>(randomSide(gen)),
                          static_cast<float>(randomSide(gen))};
-        particle->setVelocity(vel);
+        particle.setVelocity(vel);
 
         break;
       }
-    }
-
-    /* We don't want lame particles. Reject, start over. */
-    if (particle->getVelocity().x == 0.0F &&
-        particle->getVelocity().y == 0.0F) {
-      delete particle;
-      continue;
     }
 
     /* Randomly change the colors of the particles */
@@ -82,9 +76,9 @@ void ParticleSystem::fuel(int particles) {
     sf::Color color{static_cast<unsigned char>(randomColor(gen)),
                     static_cast<unsigned char>(randomColor(gen)),
                     static_cast<unsigned char>(randomColor(gen)), 255};
-    particle->setDrawVertexColor(color);
+    particle.setDrawVertexColor(color);
 
-    particles_.push_back(ParticlePtr(particle));
+    particles_.push_back(std::move(particle));
   }
 }
 
@@ -98,28 +92,28 @@ std::string ParticleSystem::getNumberOfParticlesString() const {
 /************************************************************/
 void ParticleSystem::update(float deltaTime) {
   /* Run through each particle and apply our system to it */
-  for (auto it = particles_.begin(); it != particles_.end(); it++) {
+  for (auto it = particles_.begin(); it != particles_.end(); ++it) {
     /* Apply Gravity */
     sf::Vector2f vel{gravity_.x * deltaTime, gravity_.y * deltaTime};
-    (*it)->updateVelocity(vel);
+    (*it).updateVelocity(vel);
 
     /* Apply thrust */
-    sf::Vector2f VertexPosition{(*it)->getDrawVertex().position.x,
-                                (*it)->getDrawVertex().position.y};
-    VertexPosition.x += (*it)->getVelocity().x * deltaTime * particle_speed_;
-    VertexPosition.y += (*it)->getVelocity().y * deltaTime * particle_speed_;
-    (*it)->setDrawVertexPosition(VertexPosition);
+    sf::Vector2f vertexPosition{(*it).getDrawVertex().position.x,
+                                (*it).getDrawVertex().position.y};
+    vertexPosition.x += (*it).getVelocity().x * deltaTime * particle_speed_;
+    vertexPosition.y += (*it).getVelocity().y * deltaTime * particle_speed_;
+    (*it).setDrawVertexPosition(vertexPosition);
 
     /* If they are set to disolve, disolve */
     if (dissolve_) {
-      (*it)->updateDrawVertexColorAlpha(dissolutionRate_);
+      (*it).updateDrawVertexColorAlpha(dissolutionRate_);
     }
 
-    if ((*it)->getDrawVertex().position.x > static_cast<float>(canvasSize_.x) ||
-        (*it)->getDrawVertex().position.x < 0 ||
-        (*it)->getDrawVertex().position.y > static_cast<float>(canvasSize_.y) ||
-        (*it)->getDrawVertex().position.y < 0 ||
-        (*it)->getDrawVertex().color.a < 10) {
+    if ((*it).getDrawVertex().position.x > static_cast<float>(canvasSize_.x) ||
+        (*it).getDrawVertex().position.x < 0 ||
+        (*it).getDrawVertex().position.y > static_cast<float>(canvasSize_.y) ||
+        (*it).getDrawVertex().position.y < 0 ||
+        (*it).getDrawVertex().color.a < 10) {
       it = particles_.erase(it);
       if (it == particles_.end()) {
         return;

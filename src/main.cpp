@@ -3,13 +3,14 @@
 //
 
 #include <SFML/Graphics.hpp>
+#include <future>
 #include <sstream>
 
 #include "ParticleSystem.hpp"
 
 int main() {
   /* Define desired resolution and open a window */
-  sf::VideoMode videoMode(1200, 1200);
+  sf::VideoMode videoMode(2000, 1200);
   sf::RenderWindow window(sf::VideoMode(videoMode),
                           "Inside the Particle Storm");
   window.setVerticalSyncEnabled(true);
@@ -107,7 +108,8 @@ int main() {
 
       /* Mouse Clicks */
       if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-        particleSystem.fuel(25);
+        std::future<void> f1 =
+            std::async(std::launch::async, [&]() { particleSystem.fuel(25); });
       }
       if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
         sf::Vector2f newGravity = lastMousePos - mousePos;
@@ -133,8 +135,9 @@ int main() {
       text.setString(buffer.str());
 
       /* Update particle system */
-      particleSystem.update(static_cast<float>(UPDATE_STEP) / 1000);
-
+      auto f2 = std::async(std::launch::async, [&]() {
+        particleSystem.update(static_cast<float>(UPDATE_STEP) / 1000);
+      });
       frameSkips++;
       nextUpdate += UPDATE_STEP;
     }
