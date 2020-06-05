@@ -1,4 +1,4 @@
-# SFMLTest
+# SFMLParticleAnimation
 
 
 
