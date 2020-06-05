@@ -25,6 +25,10 @@ class ParticleSystem : public sf::Drawable {
   /* Constructors/Destructor */
 
   explicit ParticleSystem(sf::Vector2u canvasSize);
+  ParticleSystem(const ParticleSystem &) = default;
+  ParticleSystem(ParticleSystem &&) noexcept = default;
+  ParticleSystem &operator=(const ParticleSystem &) = default;
+  ParticleSystem &operator=(ParticleSystem &&) noexcept = default;
   ~ParticleSystem() override;
 
   /* Getters and Setters */
