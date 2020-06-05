@@ -20,9 +20,10 @@
 
 int main() {
   /* Define desired resolution and open a window */
-  sf::VideoMode videoMode(2000, 1200);
-  sf::RenderWindow window(sf::VideoMode(videoMode),
-                          "Inside the Particle Storm");
+  constexpr int windowWidth{2000};
+  constexpr int windowHeight{1200};
+  sf::VideoMode videoMode(windowWidth, windowHeight);
+  sf::RenderWindow window(videoMode, "Inside the Particle Storm");
   window.setVerticalSyncEnabled(true);
 
   /* Load a font and setup some texty-type stuff */

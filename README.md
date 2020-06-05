@@ -2,4 +2,4 @@
 
 
 
-This is a testing environment for SFML. 
+This is a particle animation for SFML. 
