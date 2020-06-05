@@ -4,6 +4,9 @@
 
 #include "Particle.hpp"
 
+#include <SFML/Graphics/PrimitiveType.hpp>  // for Points
+#include <SFML/Graphics/RenderTarget.hpp>   // for RenderTarget
+
 namespace app {
 
 void Particle::draw(sf::RenderTarget &target, sf::RenderStates states) const {

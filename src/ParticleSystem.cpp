@@ -4,8 +4,13 @@
 
 #include "ParticleSystem.hpp"
 
-#include <sstream>
-#include <type_traits>
+#include <SFML/Graphics/PrimitiveType.hpp>  // for Points
+#include <SFML/Graphics/RenderTarget.hpp>   // for RenderTarget
+#include <SFML/Graphics/Vertex.hpp>         // for Vertex
+#include <SFML/System/Vector2.hpp>          // for Vector2::Vector2<T>
+#include <cmath>                            // for cos, sin
+#include <sstream>                          // for ostringstream, basic_ostream
+#include <type_traits>                      // for move
 
 namespace app {
 

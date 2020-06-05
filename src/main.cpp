@@ -2,11 +2,21 @@
 // Created by Michael Wittmann on 05/06/2020.
 //
 
-#include <SFML/Graphics.hpp>
-#include <future>
-#include <sstream>
+#include <SFML/Config.hpp>                 // for Uint32, Uint8
+#include <SFML/Graphics/Color.hpp>         // for Color, Color::Black
+#include <SFML/Graphics/Font.hpp>          // for Font
+#include <SFML/Graphics/RenderWindow.hpp>  // for RenderWindow
+#include <SFML/Graphics/Text.hpp>          // for Text
+#include <SFML/System/Clock.hpp>           // for Clock
+#include <SFML/System/Vector2.hpp>         // for Vector2f, Vector2u
+#include <SFML/Window/Event.hpp>           // for Event, Event::(anonymous)
+#include <SFML/Window/Keyboard.hpp>        // for Keyboard, Keyboard::A, Key...
+#include <SFML/Window/Mouse.hpp>           // for Mouse, Mouse::Left, Mouse:...
+#include <SFML/Window/VideoMode.hpp>       // for VideoMode
+#include <future>                          // for async, launch, launch::async
+#include <sstream>                         // for operator<<, basic_ostream
 
-#include "ParticleSystem.hpp"
+#include "ParticleSystem.hpp"  // for ParticleSystem
 
 int main() {
   /* Define desired resolution and open a window */

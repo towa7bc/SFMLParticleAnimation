@@ -5,7 +5,15 @@
 #ifndef SFMLTEST_PARTICLE_HPP
 #define SFMLTEST_PARTICLE_HPP
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Config.hpp>                 // for Uint8
+#include <SFML/Graphics/Color.hpp>         // for Color
+#include <SFML/Graphics/Drawable.hpp>      // for Drawable
+#include <SFML/Graphics/RenderStates.hpp>  // for RenderStates
+#include <SFML/Graphics/Vertex.hpp>        // for Vertex
+#include <SFML/System/Vector2.hpp>         // for Vector2f
+namespace sf {
+class RenderTarget;
+}
 
 namespace app {
 

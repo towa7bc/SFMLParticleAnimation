@@ -5,11 +5,23 @@
 #ifndef SFMLTEST_PARTICLESYSTEM_HPP
 #define SFMLTEST_PARTICLESYSTEM_HPP
 
+#include <SFML/Config.hpp>                 // for Uint8
+#include <SFML/Graphics/Color.hpp>         // for Color
+#include <SFML/Graphics/Drawable.hpp>      // for Drawable
+#include <SFML/Graphics/RenderStates.hpp>  // for RenderStates
+#include <SFML/System/Vector2.hpp>         // for Vector2f, Vector2u
+#include <algorithm>                       // for uniform_int_distribution
+#include <iosfwd>                          // for string
 #include <memory>
 #include <random>
+#include <random>  // for uniform_real_distribution
 #include <vector>
+#include <vector>  // for vector
 
-#include "Particle.hpp"
+#include "Particle.hpp"  // for Particle
+namespace sf {
+class RenderTarget;
+}
 
 namespace Shape {
 enum { CIRCLE, SQUARE };
