@@ -9,7 +9,7 @@
 
 int main() {
   /* Define desired resolution and open a window */
-  sf::VideoMode videoMode(800, 800);
+  sf::VideoMode videoMode(1200, 1200);
   sf::RenderWindow window(sf::VideoMode(videoMode),
                           "Inside the Particle Storm");
   window.setVerticalSyncEnabled(true);
