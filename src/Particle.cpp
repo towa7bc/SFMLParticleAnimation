@@ -13,8 +13,8 @@ void Particle::draw(sf::RenderTarget &target, sf::RenderStates states) const {
   target.draw(&draw_vertex_, 1, sf::Points, states);
 }
 
-void Particle::updateDrawVertexColorAlpha(const int &alpha) {
-  draw_vertex_.color.a -= static_cast<unsigned char>(alpha);
+void Particle::updateDrawVertexColorAlpha(const sf::Uint8 &alpha) {
+  draw_vertex_.color.a -= alpha;
 }
 
 void Particle::updateVelocity(const sf::Vector2f &vel) { velocity_ += vel; }
