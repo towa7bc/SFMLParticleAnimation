@@ -17,6 +17,9 @@ macro(run_conan)
     conan_add_remote(NAME manu343726 URL
             https://api.bintray.com/conan/manu343726/conan-packages)
 
+    conan_add_remote(NAME conan-mpusz URL
+            https://api.bintray.com/conan/mpusz/conan-mpusz)
+
     conan_cmake_run(
             REQUIRES
             ${CONAN_EXTRA_REQUIRES}
@@ -24,6 +27,7 @@ macro(run_conan)
             spdlog/1.5.0
             sfml/2.5.1@bincrafters/stable
             imgui-sfml/2.1@bincrafters/stable
+            irrlicht/1.8.4@mpusz/testing
             OPTIONS
             ${CONAN_EXTRA_OPTIONS}
             BASIC_SETUP

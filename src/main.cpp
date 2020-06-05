@@ -2,6 +2,8 @@
 // Created by Michael Wittmann on 05/06/2020.
 //
 
+#include <irrlicht.h>
+
 #include <SFML/Config.hpp>                 // for Uint32, Uint8
 #include <SFML/Graphics/Color.hpp>         // for Color, Color::Black
 #include <SFML/Graphics/Font.hpp>          // for Font
@@ -19,6 +21,12 @@
 #include "ParticleSystem.hpp"  // for ParticleSystem
 
 int main() {
+  auto *irrlichtDevice = irr::createDevice(
+      irr::video::EDT_SOFTWARE, irr::core::dimension2d<irr::u32>(640, 480), 16,
+      false, false, false, 0);
+  if (irrlichtDevice == nullptr) {
+    return -1;
+  }
   /* Define desired resolution and open a window */
   constexpr int windowWidth{2000};
   constexpr int windowHeight{1200};
