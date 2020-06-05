@@ -38,7 +38,8 @@ int main() {
 
   /* Create the particle system and give it some fuel */
   app::ParticleSystem particleSystem(window.getSize());
-  particleSystem.fuel(1000);
+  constexpr int numParticles{1000};
+  particleSystem.fuel(numParticles);
 
   /* Let's make a clock and junk for timing stuff! */
   sf::Clock timer;
