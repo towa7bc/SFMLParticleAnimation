@@ -15,5 +15,4 @@ target_link_libraries(
         CONAN_PKG::spdlog
         CONAN_PKG::sfml
         CONAN_PKG::imgui-sfml
-        CONAN_PKG::irrlicht
 )

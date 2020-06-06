@@ -2,8 +2,6 @@
 // Created by Michael Wittmann on 05/06/2020.
 //
 
-#include <irrlicht.h>
-
 #include <SFML/Config.hpp>                 // for Uint32, Uint8
 #include <SFML/Graphics/Color.hpp>         // for Color, Color::Black
 #include <SFML/Graphics/Font.hpp>          // for Font
@@ -20,46 +18,12 @@
 
 #include "ParticleSystem.hpp"  // for ParticleSystem
 
-int main() {
-  auto *irrlichtDevice = irr::createDevice(
-      irr::video::EDT_SOFTWARE, irr::core::dimension2d<irr::u32>(640, 480), 16,
-      false, false, false, 0);
-  if (irrlichtDevice == nullptr) {
-    return -1;
-  }
-  /* Define desired resolution and open a window */
-  constexpr int windowWidth{2000};
-  constexpr int windowHeight{1200};
-  sf::VideoMode videoMode(windowWidth, windowHeight);
-  sf::RenderWindow window(videoMode, "Inside the Particle Storm");
-  window.setVerticalSyncEnabled(true);
-
-  /* Load a font and setup some texty-type stuff */
-  sf::Font font;
-  if (!font.loadFromFile(
-          "/Users/michaelwittmann/CLionProjects/SFMLTest/fixedsys500c.ttf")) {
-    return 1;
-  }
-  sf::Text text("", font, 12);
-  text.setPosition(static_cast<float>(window.getSize().x) * 0.01F,
-                   static_cast<float>(window.getSize().y) * 0.01F);
-
-  /* Create the particle system and give it some fuel */
-  app::ParticleSystem particleSystem(window.getSize());
-  constexpr int numParticles{1000};
-  particleSystem.fuel(numParticles);
-
-  /* Let's make a clock and junk for timing stuff! */
-  sf::Clock timer;
-  const sf::Uint32 UPDATE_STEP = 20;
-  const sf::Uint32 MAX_UPDATE_SKIP = 5;
-  sf::Uint32 nextUpdate =
-      static_cast<unsigned int>(timer.getElapsedTime().asMilliseconds());
-
-  /* For some fancy mouse stuff */
-  sf::Vector2f lastMousePos(static_cast<sf::Vector2f>(window.getSize()));
-
-  /* Main Loop */
+void ExecuteMainLoop(sf::RenderWindow& window, sf::Text& text,
+                     app::ParticleSystem& particleSystem,
+                     const sf::Clock& timer, const unsigned int UPDATE_STEP,
+                     const unsigned int MAX_UPDATE_SKIP,
+                     unsigned int nextUpdate,
+                     sf::Vector2f& lastMousePos) { /* Main Loop */
   while (window.isOpen()) {
     /* Init a skipped frame counter */
     sf::Uint32 frameSkips = 0;
@@ -117,7 +81,7 @@ int main() {
       /* Mouse Input */
       /* Set the position to match the mouse location */
       sf::Vector2f mousePos =
-          static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
+          window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
       /* Update Particle Emitter to Mouse Position */
       if (mousePos.x > 0 || mousePos.y > 0 ||
@@ -129,7 +93,7 @@ int main() {
       /* Mouse Clicks */
       if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         std::future<void> f1 =
-            std::async(std::launch::async, [&]() { particleSystem.fuel(25); });
+            std::async(std::launch::async, [&]() { particleSystem.fuel(50); });
       }
       if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
         sf::Vector2f newGravity = lastMousePos - mousePos;
@@ -167,5 +131,40 @@ int main() {
     window.draw(particleSystem);
     window.display();
   }
+}
+int main() {
+  /* Define desired resolution and open a window */
+  constexpr int windowWidth{1000};
+  constexpr int windowHeight{1000};
+  sf::VideoMode videoMode(windowWidth, windowHeight);
+  sf::RenderWindow window(videoMode, "Inside the Particle Storm");
+  window.setVerticalSyncEnabled(true);
+
+  /* Load a font and setup some texty-type stuff */
+  sf::Font font;
+  if (!font.loadFromFile(
+          "/Users/michaelwittmann/CLionProjects/SFMLTest/fixedsys500c.ttf")) {
+    return 1;
+  }
+  sf::Text text("", font, 12);
+  text.setPosition(static_cast<float>(window.getSize().x) * 0.01F,
+                   static_cast<float>(window.getSize().y) * 0.01F);
+
+  /* Create the particle system and give it some fuel */
+  app::ParticleSystem particleSystem(window.getSize());
+  constexpr int numParticles{1000};
+  particleSystem.fuel(numParticles);
+
+  /* Let's make a clock and junk for timing stuff! */
+  sf::Clock timer;
+  constexpr sf::Uint32 UPDATE_STEP = 20;
+  constexpr sf::Uint32 MAX_UPDATE_SKIP = 5;
+  sf::Uint32 nextUpdate =
+      static_cast<unsigned int>(timer.getElapsedTime().asMilliseconds());
+
+  /* For some fancy mouse stuff */
+  sf::Vector2f lastMousePos(static_cast<sf::Vector2f>(window.getSize()));
+  ExecuteMainLoop(window, text, particleSystem, timer, UPDATE_STEP,
+                  MAX_UPDATE_SKIP, nextUpdate, lastMousePos);
   return 0;
 }

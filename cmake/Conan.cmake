@@ -27,7 +27,7 @@ macro(run_conan)
             spdlog/1.5.0
             sfml/2.5.1@bincrafters/stable
             imgui-sfml/2.1@bincrafters/stable
-            irrlicht/1.8.4@mpusz/testing
+            #irrlicht/1.8.4@mpusz/testing
             OPTIONS
             ${CONAN_EXTRA_OPTIONS}
             BASIC_SETUP
