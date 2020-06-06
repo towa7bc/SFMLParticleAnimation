@@ -2,19 +2,22 @@
 // Created by Michael Wittmann on 05/06/2020.
 //
 
+#define GL_SILENCE_DEPRECATION
+
 #include <SFML/Config.hpp>                 // for Uint32, Uint8
 #include <SFML/Graphics/Color.hpp>         // for Color, Color::Black
 #include <SFML/Graphics/Font.hpp>          // for Font
 #include <SFML/Graphics/RenderWindow.hpp>  // for RenderWindow
 #include <SFML/Graphics/Text.hpp>          // for Text
-#include <SFML/System/Clock.hpp>           // for Clock
-#include <SFML/System/Vector2.hpp>         // for Vector2f, Vector2u
-#include <SFML/Window/Event.hpp>           // for Event, Event::(anonymous)
-#include <SFML/Window/Keyboard.hpp>        // for Keyboard, Keyboard::A, Key...
-#include <SFML/Window/Mouse.hpp>           // for Mouse, Mouse::Left, Mouse:...
-#include <SFML/Window/VideoMode.hpp>       // for VideoMode
-#include <future>                          // for async, launch, launch::async
-#include <sstream>                         // for operator<<, basic_ostream
+#include <SFML/OpenGL.hpp>
+#include <SFML/System/Clock.hpp>      // for Clock
+#include <SFML/System/Vector2.hpp>    // for Vector2f, Vector2u
+#include <SFML/Window/Event.hpp>      // for Event, Event::(anonymous)
+#include <SFML/Window/Keyboard.hpp>   // for Keyboard, Keyboard::A, Key...
+#include <SFML/Window/Mouse.hpp>      // for Mouse, Mouse::Left, Mouse:...
+#include <SFML/Window/VideoMode.hpp>  // for VideoMode
+#include <future>                     // for async, launch, launch::async
+#include <sstream>                    // for operator<<, basic_ostream
 
 #include "ParticleSystem.hpp"  // for ParticleSystem
 #include "detail/Log.hpp"
@@ -23,9 +26,10 @@ void ExecuteMainLoop(sf::RenderWindow& window, sf::Text& text,
                      app::ParticleSystem& particleSystem,
                      const sf::Clock& timer, const unsigned int UPDATE_STEP,
                      const unsigned int MAX_UPDATE_SKIP,
-                     unsigned int nextUpdate,
-                     sf::Vector2f& lastMousePos) { /* Main Loop */
-  while (window.isOpen()) {
+                     unsigned int nextUpdate, sf::Vector2f& lastMousePos) {
+  /* Main Loop */
+  bool running{true};
+  while (running) {
     /* Init a skipped frame counter */
     sf::Uint32 frameSkips = 0;
 
@@ -38,11 +42,18 @@ void ExecuteMainLoop(sf::RenderWindow& window, sf::Text& text,
       while (window.pollEvent(event)) {
         switch (event.type) {
           case (sf::Event::Closed): {
+            running = false;
             window.close();
+            break;
+          }
+          case (sf::Event::Resized): {
+            glViewport(0, 0, static_cast<GLsizei>(event.size.width),
+                       static_cast<GLsizei>(event.size.height));
             break;
           }
           case (sf::Event::KeyPressed): {
             if (event.key.code == sf::Keyboard::Escape) {
+              running = false;
               window.close();
             }
             if (event.key.code == sf::Keyboard::Space) {
@@ -127,12 +138,14 @@ void ExecuteMainLoop(sf::RenderWindow& window, sf::Text& text,
       nextUpdate += UPDATE_STEP;
     }
     /* Draw particle system and text */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     window.clear(sf::Color::Black);
     window.draw(text);
     window.draw(particleSystem);
     window.display();
   }
 }
+
 int main() {
   /* Define desired resolution and open a window */
   if (app::Log::logger() == nullptr) {
@@ -141,10 +154,12 @@ int main() {
   app::Log::logger()->trace("program started.");
   constexpr int windowWidth{1400};
   constexpr int windowHeight{1000};
-  sf::VideoMode videoMode(windowWidth, windowHeight);
-  sf::RenderWindow window(videoMode, "Inside the Particle Storm");
+  sf::RenderWindow window(sf::VideoMode{windowWidth, windowHeight},
+                          "Inside the Particle Storm", sf::Style::Default,
+                          sf::ContextSettings{24, 8, 4, 2, 1});
+  glEnable(GL_TEXTURE_2D);
   window.setVerticalSyncEnabled(true);
-
+  window.setActive(true);
   /* Load a font and setup some texty-type stuff */
   sf::Font font;
   if (!font.loadFromFile("../../src/detail/fixedsys500c.ttf")) {

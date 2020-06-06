@@ -9,7 +9,7 @@ add_executable(
         detail/Core.hpp
         detail/Log.cpp
         detail/Log.hpp
-)
+        App.cpp App.hpp)
 
 target_link_libraries(
         SFMLTest
