@@ -17,6 +17,7 @@
 #include <sstream>                         // for operator<<, basic_ostream
 
 #include "ParticleSystem.hpp"  // for ParticleSystem
+#include "detail/Log.hpp"
 
 void ExecuteMainLoop(sf::RenderWindow& window, sf::Text& text,
                      app::ParticleSystem& particleSystem,
@@ -134,7 +135,11 @@ void ExecuteMainLoop(sf::RenderWindow& window, sf::Text& text,
 }
 int main() {
   /* Define desired resolution and open a window */
-  constexpr int windowWidth{1000};
+  if (app::Log::logger() == nullptr) {
+    app::Log::init();
+  }
+  app::Log::logger()->trace("program started.");
+  constexpr int windowWidth{1400};
   constexpr int windowHeight{1000};
   sf::VideoMode videoMode(windowWidth, windowHeight);
   sf::RenderWindow window(videoMode, "Inside the Particle Storm");
@@ -142,8 +147,7 @@ int main() {
 
   /* Load a font and setup some texty-type stuff */
   sf::Font font;
-  if (!font.loadFromFile(
-          "/Users/michaelwittmann/CLionProjects/SFMLTest/fixedsys500c.ttf")) {
+  if (!font.loadFromFile("../../src/detail/fixedsys500c.ttf")) {
     return 1;
   }
   sf::Text text("", font, 12);

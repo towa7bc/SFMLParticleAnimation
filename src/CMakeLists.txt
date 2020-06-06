@@ -5,7 +5,11 @@ add_executable(
         Particle.cpp
         Particle.hpp
         ParticleSystem.cpp
-        ParticleSystem.hpp)
+        ParticleSystem.hpp
+        detail/Core.hpp
+        detail/Log.cpp
+        detail/Log.hpp
+)
 
 target_link_libraries(
         SFMLTest
