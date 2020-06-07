@@ -33,13 +33,16 @@ class App {
   void Setup();
   void Update();
   void Draw();
-  void HandleSFMLEvents();
+  void UpdateSFMLEvents();
+  void UpdateFPS();
   Scope<sf::RenderWindow> window_;
   Scope<ParticleSystem> particleSystem_;
   bool running_{true};
   sf::Font font_;
   Scope<sf::Text> text_;
   sf::Vector2f lastMousePos_;
+  sf::Clock fpsClock_;
+  float fps_{0};
   static constexpr sf::Uint32 UPDATE_STEP = 20;
   static constexpr sf::Uint32 MAX_UPDATE_SKIP = 5;
 };

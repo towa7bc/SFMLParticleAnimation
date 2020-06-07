@@ -20,11 +20,12 @@ int App::Run() {
   sf::Uint32 nextUpdate =
       static_cast<unsigned int>(timer.getElapsedTime().asMilliseconds());
   while (running_) {
+    UpdateFPS();
     sf::Uint32 frameSkips = 0;
     while (timer.getElapsedTime().asMilliseconds() >
                static_cast<sf::Uint8>(nextUpdate) &&
            frameSkips < MAX_UPDATE_SKIP) {
-      HandleSFMLEvents();
+      UpdateSFMLEvents();
       Update();
       frameSkips++;
       nextUpdate += UPDATE_STEP;
@@ -34,7 +35,7 @@ int App::Run() {
   return 0;
 }
 
-void App::HandleSFMLEvents() {
+void App::UpdateSFMLEvents() {
   sf::Event event{};
   while (window_->pollEvent(event)) {
     switch (event.type) {
@@ -140,6 +141,7 @@ void App::HandleSFMLEvents() {
            << "E to Change Distribution Type\n"
            << "Middle Click clears Gravity\n"
            << "Left Click to Add\n"
+           << "Frames per Second (FPS): " << fps_ << "\n"
            << "Particles: " << particleSystem_->getNumberOfParticles();
     text_->setString(buffer.str());
   });
@@ -190,6 +192,14 @@ void App::Setup() {
                      static_cast<float>(window_->getSize().y) * 0.01F);
   lastMousePos_ = static_cast<sf::Vector2f>(window_->getSize());
 }
+
 App::App() { Setup(); }
+
+void App::UpdateFPS() {
+  auto f2 = std::async(std::launch::async, [&]() {
+    return std::round(1.f / fpsClock_.restart().asSeconds());
+  });
+  fps_ = f2.get();
+}
 
 }  // namespace app
