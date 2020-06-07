@@ -6,6 +6,7 @@
 
 #include "App.hpp"
 
+#include <cmath>
 #include <future>
 #include <memory>
 #include <sstream>  // for operator<<, basic_ostream
