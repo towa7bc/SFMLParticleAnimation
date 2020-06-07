@@ -46,6 +46,7 @@ void App::HandleSFMLEvents() {
       case (sf::Event::Resized): {
         glViewport(0, 0, static_cast<GLsizei>(event.size.width),
                    static_cast<GLsizei>(event.size.height));
+        glGetError();
         break;
       }
       case (sf::Event::KeyPressed): {
@@ -64,9 +65,9 @@ void App::HandleSFMLEvents() {
               fullscreen ? sf::Style::Fullscreen : sf::Style::Default,
               sf::ContextSettings{24, 8, 4, 2, 1});
           fullscreen = !fullscreen;
+          window_->setActive(true);
           glEnable(GL_TEXTURE_2D);
           window_->setVerticalSyncEnabled(true);
-          window_->setActive(true);
         }
         if (event.key.code == sf::Keyboard::Space) {
           particleSystem_->setDissolve();
@@ -102,45 +103,46 @@ void App::HandleSFMLEvents() {
     }
   }
 
-  /* Mouse Input */
-  /* Set the position to match the mouse location */
-  sf::Vector2f mousePos =
-      window_->mapPixelToCoords(sf::Mouse::getPosition(*window_));
+  auto f2 = std::async(std::launch::async, [&]() {
+    /* Mouse Input */
+    /* Set the position to match the mouse location */
+    sf::Vector2f mousePos =
+        window_->mapPixelToCoords(sf::Mouse::getPosition(*window_));
 
-  /* Update Particle Emitter to Mouse Position */
-  if (mousePos.x > 0 || mousePos.y > 0 ||
-      mousePos.x < static_cast<float>(window_->getSize().x) ||
-      mousePos.y < static_cast<float>(window_->getSize().y)) {
-    particleSystem_->setPosition(mousePos);
-  }
-  /* Mouse Clicks */
-  if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-    std::future<void> f1 =
-        std::async(std::launch::async, [&]() { particleSystem_->fuel(50); });
-  }
-  if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-    sf::Vector2f newGravity = lastMousePos_ - mousePos;
-    newGravity *= 0.75F;
-    particleSystem_->setGravity(newGravity);
-  }
-  if (sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
-    particleSystem_->setGravity(0.0F, 0.0F);
-  }
+    /* Update Particle Emitter to Mouse Position */
+    if (mousePos.x > 0 || mousePos.y > 0 ||
+        mousePos.x < static_cast<float>(window_->getSize().x) ||
+        mousePos.y < static_cast<float>(window_->getSize().y)) {
+      particleSystem_->setPosition(mousePos);
+    }
+    /* Mouse Clicks */
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      particleSystem_->fuel(50);
+    }
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+      sf::Vector2f newGravity = lastMousePos_ - mousePos;
+      newGravity *= 0.75F;
+      particleSystem_->setGravity(newGravity);
+    }
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
+      particleSystem_->setGravity(0.0F, 0.0F);
+    }
 
-  /* Update Last Mouse Position */
-  lastMousePos_ = mousePos;
+    /* Update Last Mouse Position */
+    lastMousePos_ = mousePos;
 
-  /* Push Diag Text */
-  std::ostringstream buffer;
-  buffer << "Q/W to Decrease/Increase Particle Speed\n"
-         << "A/S to Decrease/Increase Decay Rate\n"
-         << "F to Toggle Fullscreen\n"
-         << "Right Click+Drag to Shift Gravity\n"
-         << "E to Change Distribution Type\n"
-         << "Middle Click clears Gravity\n"
-         << "Left Click to Add\n"
-         << "Particles: " << particleSystem_->getNumberOfParticles();
-  text_->setString(buffer.str());
+    /* Push Diag Text */
+    std::ostringstream buffer;
+    buffer << "Q/W to Decrease/Increase Particle Speed\n"
+           << "A/S to Decrease/Increase Decay Rate\n"
+           << "F to Toggle Fullscreen\n"
+           << "Right Click+Drag to Shift Gravity\n"
+           << "E to Change Distribution Type\n"
+           << "Middle Click clears Gravity\n"
+           << "Left Click to Add\n"
+           << "Particles: " << particleSystem_->getNumberOfParticles();
+    text_->setString(buffer.str());
+  });
 }
 
 void App::Update() {
@@ -153,11 +155,16 @@ void App::Update() {
 void App::Draw() {
   /* Draw particle system and text */
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  window_->clear(sf::Color::Black);
-  window_->resetGLStates();
-  window_->draw(*text_);
-  window_->draw(*particleSystem_);
-  window_->display();
+  glGetError();
+  window_->setActive(false);
+  auto f2 = std::async(std::launch::async, [&]() {
+    window_->setActive(true);
+    window_->clear(sf::Color::Black);
+    window_->resetGLStates();
+    window_->draw(*text_);
+    window_->draw(*particleSystem_);
+    window_->display();
+  });
 }
 
 void App::Setup() {
@@ -170,9 +177,9 @@ void App::Setup() {
   window_ = create_scope<sf::RenderWindow>(
       sf::VideoMode{windowWidth, windowHeight}, "Inside the Particle Storm",
       sf::Style::Default, sf::ContextSettings{24, 8, 4, 2, 1});
+  window_->setActive(true);
   glEnable(GL_TEXTURE_2D);
   window_->setVerticalSyncEnabled(true);
-  window_->setActive(true);
   particleSystem_ = create_scope<ParticleSystem>(window_->getSize());
   particleSystem_->fuel(1000);
   if (!font_.loadFromFile("../../src/detail/fixedsys500c.ttf")) {
