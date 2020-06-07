@@ -24,7 +24,7 @@ macro(run_conan)
             REQUIRES
             ${CONAN_EXTRA_REQUIRES}
             catch2/2.12.0
-            spdlog/1.5.0
+            spdlog/1.6.1
             sfml/2.5.1@bincrafters/stable
             imgui-sfml/2.1@bincrafters/stable
             #irrlicht/1.8.4@mpusz/testing

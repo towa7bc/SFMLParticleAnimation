@@ -13,9 +13,7 @@
 #include <algorithm>                       // for uniform_int_distribution
 #include <iosfwd>                          // for string
 #include <memory>
-#include <random>
 #include <random>  // for uniform_real_distribution
-#include <vector>
 #include <vector>  // for vector
 
 #include "Particle.hpp"  // for Particle

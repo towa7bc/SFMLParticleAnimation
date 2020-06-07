@@ -15,7 +15,7 @@ namespace app {
 
 class Log {
  public:
-  static void init();
+  static void Initialize();
   static Ref<spdlog::logger> &logger() { return core_logger_; }
 
  private:

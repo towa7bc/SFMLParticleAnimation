@@ -12,6 +12,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>  // for stdout_color_sink_mt
 #include <spdlog/spdlog.h>                    // for register_logger
 
+#include <memory>
 #include <string>  // for operator+
 #include <vector>  // for vector
 
@@ -22,7 +23,7 @@ Ref<spdlog::logger> Log::core_logger_;
 
 namespace app {
 
-void Log::init() {
+void Log::Initialize() {
   try {
     spdlog::init_thread_pool(max_items, max_threads);
     auto stdout_sink = create_ref<spdlog::sinks::stdout_color_sink_mt>();

@@ -5,8 +5,6 @@
 #ifndef SFMLTEST_APP_HPP
 #define SFMLTEST_APP_HPP
 
-#define GL_SILENCE_DEPRECATION
-
 #include <SFML/Config.hpp>                 // for Uint32, Uint8
 #include <SFML/Graphics/Color.hpp>         // for Color, Color::Black
 #include <SFML/Graphics/Font.hpp>          // for Font
@@ -19,21 +17,31 @@
 #include <SFML/Window/Keyboard.hpp>   // for Keyboard, Keyboard::A, Key...
 #include <SFML/Window/Mouse.hpp>      // for Mouse, Mouse::Left, Mouse:...
 #include <SFML/Window/VideoMode.hpp>  // for VideoMode
+#include <memory>
+
+#include "ParticleSystem.hpp"  // for ParticleSystem
+#include "detail/Core.hpp"     // for create_ref
 
 namespace app {
 
 class App {
  public:
-  void Setup();
-  void Update();
-  void Draw();
-  void HandleEvent();
+  App();
   int Run();
 
  private:
-  sf::VideoMode video_mode_;
-  sf::RenderWindow window_;
-  sf::Event event_;
+  void Setup();
+  void Update();
+  void Draw();
+  void HandleSFMLEvents();
+  Scope<sf::RenderWindow> window_;
+  Scope<ParticleSystem> particleSystem_;
+  bool running_{true};
+  sf::Font font_;
+  Scope<sf::Text> text_;
+  sf::Vector2f lastMousePos_;
+  static constexpr sf::Uint32 UPDATE_STEP = 20;
+  static constexpr sf::Uint32 MAX_UPDATE_SKIP = 5;
 };
 
 }  // namespace app
